@@ -321,85 +321,106 @@
             display: none !important;
         }
 
+
         /* Мобильная версия */
         @media screen and (max-width: 768px) {
-            body {
-                padding-bottom: 80px;
-                /* чтобы кнопка не перекрывала контент */
-                overflow-y: auto;
-                /* разрешаем прокрутку страницы */
+
+            /* Канвас фиксируется, чтобы оставаться на месте при прокрутке */
+            canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: 1;
+                pointer-events: auto;
+                /* доска остаётся интерактивной */
             }
 
+            /* Панели выстраиваются вертикально, фон прозрачный (фон задаётся секциями) */
             #left-panel,
             #right-panel {
                 position: relative;
-                /* убираем абсолютное позиционирование */
                 top: auto;
                 left: auto;
                 right: auto;
-                width: calc(100% - 40px);
-                /* почти вся ширина с отступами */
+                bottom: auto;
+                width: 100%;
                 max-width: 100%;
-                margin: 20px auto;
-                /* центрируем и добавляем вертикальные отступы */
-                padding: 10px;
+                margin: 0;
                 box-sizing: border-box;
+                background: transparent;
+                z-index: 2;
+                overflow-y: visible;
+                /* отключаем собственные скроллы */
+                padding-bottom: 10px;
+            }
+
+            body {
+                overflow-y: auto;
+                min-height: 100vh;
+                padding-bottom: 100vh;
+                /* пустое пространство высотой с экран */
             }
 
             #left-panel {
-                margin-bottom: 0;
-                /* убираем нижний отступ, чтобы панели шли вплотную */
+                order: 1;
             }
 
             #right-panel {
-                margin-top: 0;
-                /* убираем верхний отступ */
+                order: 2;
             }
 
-            /* Кнопка переключения панелей – по центру внизу */
             #toggle-panels {
+                position: fixed;
                 bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                right: auto;
-                /* отменяем предыдущее значение right: 10px */
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background: rgba(76, 201, 240, 0.9);
-                color: #0a192f;
-                font-size: 24px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-                z-index: 100;
+                z-index: 10;
+                margin: 0;
+                /* остальные стили (ширина, высота, фон и т.д.) остаются как в вашем коде */
             }
 
-            /* Уменьшаем размеры панелей для более компактного вида */
+            /* Стили секций: полупрозрачный фон с размытием для лучшей читаемости на фоне доски */
             .panel-section {
-                padding: 10px;
+                background: rgba(10, 25, 47, 0.85);
+                backdrop-filter: blur(5px);
+                margin-bottom: 10px;
+                /* отступ между секциями */
             }
 
+            /* Адаптация кнопок и полей ввода для удобного нажатия пальцем */
             .buttons-row {
-                gap: 5px;
+                flex-wrap: wrap;
             }
 
             .axis-btn,
             .game-btn {
-                padding: 6px 10px;
-                font-size: 14px;
+                padding: 10px 12px;
+                font-size: 16px;
+                min-width: 80px;
             }
 
-            /* Корректируем поле ввода чата и список комнат */
             .network-input {
                 width: 100%;
                 box-sizing: border-box;
+                margin-bottom: 8px;
+                padding: 10px;
+                font-size: 16px;
+            }
+        }
+
+        /* Скрываем кнопку на десктопе */
+        @media screen and (min-width: 769px) {
+            #toggle-panels {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
-    <button id="toggle-panels" class="game-btn"
-        style="position: fixed; bottom: 10px; right: 10px; z-index: 20;">☰</button>
+    <button id="toggle-panels" class="game-btn">☰</button>
     <!-- Левая панель с подсказками и историей ходов -->
     <div id="left-panel">
         <!-- Секция подсказок (по умолчанию свёрнута) -->
